@@ -1,0 +1,50 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+<MudAutocomplete Dense="true" T="Item" Margin="Margin.Dense" Value="@SelectedItem" Label="Search item" SearchFunc="ItemsSearchAsync" Disabled="false" Variant="Variant.Outlined" ToStringFunc="ToStringFunc" ValueChanged="ItemValueChanged" />
+
+@code {
+
+    public class Item
+    {
+        public int Id { get; set; }
+    }
+
+    public Item SelectedItem { get; set; }
+    public List<Item> Items { get; set; } = new List<Item>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Items.Add(new Item() { Id = 1 });
+        Items.Add(new Item() { Id = 2 });
+        Items.Add(new Item() { Id = 11 });
+        Items.Add(new Item() { Id = 12 });
+        Items.Add(new Item() { Id = 222 });
+        Items.Add(new Item() { Id = 6 });
+    }
+
+    string ToStringFunc(Item item) => item?.Id.ToString();
+
+
+    async Task<IEnumerable<Item>> ItemsSearchAsync(string searchText)
+    {
+        if (String.IsNullOrEmpty(searchText)) return Items;
+
+        return Items.FindAll(x => searchText.Contains(x.Id.ToString()));
+    }
+
+    async Task ItemValueChanged(Item item)
+    {
+        SelectedItem = item;
+
+        StateHasChanged();
+    }
+
+}
